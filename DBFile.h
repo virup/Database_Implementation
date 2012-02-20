@@ -1,0 +1,95 @@
+#ifndef DBFILE_H_
+#define DBFILE_H_
+#include "File.h"
+#include "Record.h"
+#include "Schema.h"
+#include <string>
+#include"Heap.h"
+#include"Sorted.h"
+#include"GenericDBfile.h"
+
+//typedef enum {heap, sorted, tree} fType;
+
+
+
+class DBFile
+{
+public:
+	/**
+	 * Constructor
+	 */
+	DBFile();
+	/**
+	 * Each DBFile instance has a pointer to the current record in the file. By default, this
+	 * pointer is at the first record in the file, but it can move in response to record retrievals.
+     * The following function forces the pointer to correspond to the first record in the file
+     */
+	void MoveFirst();
+
+	/**
+	 * Is used to actually create the file, called Create. The first parameter to this function is
+	 * a text string that tells you where the binary data is physically. The second parameter to the
+	 * Create function tells you the type of the file. The return value from Create is a 1 on success
+	 *  and a zero on failure.
+	 */
+
+	int Create(char *name, fType myType, void *startup);
+    /**
+     * This function assumes that the DBFile already exists and has previously been created
+     * and then closed. The one parameter to this function is simply the physical location of
+     * the file. The return value is a 1 on success and a zero on failure.
+     */
+	int Open(char *name);
+    /**
+     * Close simply closes the file. The return value is a 1 on success and a zero on failure.
+     */
+	int Close();
+	/**
+	 * In order to add records to the file, the function Add is used. In the case of the
+	 * unordered heap file, this function
+	 * simply adds the new record to the end of the file
+	 */
+	void Add(Record &addMe);
+
+	/**
+	 * Gets the next record from the file and returns it to the user, where next is defined
+	 * to be relative to the current location of the pointer. After the function call returns,
+	 * the pointer into the file is incremented, so a subsequent call to GetNext wont return
+	 * the same record twice. The return value is an integer whose value is zero if and only
+	 * if there is not a valid record returned from the function call (which will be the case,
+	 * for example, if the last record in the file has already been returned).
+	 */
+	int GetNext(Record &fetchMe);
+
+	/**
+	 * The next version of GetNext also accepts a selection predicate (this is a conjunctive
+	 * normal form expression). It returns the next record in the file that is accepted by the
+	 * selection predicate. The literal record is used to check the selection predicate, and
+	 * is created when the parse tree for the CNF is processed.
+	 */
+	int GetNext(Record &fetchMe, CNF &applyMe, Record &literal);
+
+	/**
+	 * Load function bulk loads the DBFile instance from a text file, appending
+	 * new data to it. The character string passed to Load is the name of the data file
+ 	 * to bulk load.
+ 	 */
+	void Load(Schema &mySchema, char *loadMe);
+
+
+
+
+
+
+    /*
+     * Destructor
+     */
+	virtual ~DBFile();
+
+
+private:
+	GenericDBfile *myInternalVar;
+
+};
+
+#endif /*DBFILE_H_*/

@@ -1,0 +1,15 @@
+Designing a functional database system Edit
+
+(January 2009 to April 2009, University of Florida)
+
+    
+Team Members: Virupaksha Kanjilal, Christan Grant
+
+Design and implementation of a single-user database management system capable of storing and running SQL on large datasets [Env: C++, Unix].
+The system could
+• Support a large database in heap or sorted format.
+• Perform query evaluation and query optimization.
+• Perform relational algebra operations such as select, project, join, etc. to evaluate a query. 
+
+
+For details, please check the A*.pdf files. 
